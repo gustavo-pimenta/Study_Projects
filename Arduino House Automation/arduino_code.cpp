@@ -9,8 +9,16 @@ bool sensor_luz = false;
 SoftwareSerial bluetooth(2, 3); //TX, RX (Bluetooth)
 
 // variaveis de comunicação com o app
-int sinal_ard; // sinal enviado pelo arduino
-int sinal_app; // sinal enviado pelo app
+char bt_sinal;
+/*
+A - LIGA E DESLIGA A LUZ
+B - DEIXA O SENSOR CONTROLAR A LUZ SOZINHO
+C - NOTIFICAÇÃO PLANTA SECA
+D - NOTIFICAÇÃO PLANTA UMIDA
+F - NOTIFICAÇÃO CORREIO VAZIO
+G - NOTIFICAÇÃO CORREIO CHEIO 
+H - CORREIO COLETADO
+*/
 
 // inicializacao do sistema
 void setup()
@@ -30,7 +38,7 @@ void setup()
 // looping do sistema 
 void loop()
 {
-  delay(1000); // pausa o loop por 1 segundo
+  delay(500); // pausa o loop por meio segundo
   
   // saida das informacoes no monitor serial para monitoramento 
   Serial.print("luz: ");
@@ -44,22 +52,27 @@ void loop()
   //leitura dos dados recebidos por bluetooth
   if (bluetooth.available() > 0) {
     
-    sinal_app = bluetooth.read();// lê o sinal mais antigo recebido
+    bt_sinal = bluetooth.read();// lê o sinal mais antigo recebido
   
-    switch(sinal_app){
+    switch(bt_sinal){
       
-        case '1':
-        luz_ligada = true;
-        sensor_luz = false;
+        case 'A':
+        if(luz_ligada == true){
+          luz_ligada = false;
+          sensor_luz = false;
+        }
+        else{
+          luz_ligada = true;
+          sensor_luz = false;
+        }
         break;
         
-        case '2':
-        luz_ligada = false;
-        sensor_luz = false;
-        break;
-        
-        case '3':
+        case 'B':
         sensor_luz = true;
+        break;
+
+        case 'H':
+        correio_vazio = true;
         break;
       
         default:
@@ -95,12 +108,28 @@ void loop()
   else {
     terra_seca = false;
   }
-  
-  /*leitura do sensor de movimento
-  if (analogRead(A2) > 512) {
-    
+
+  //notificação da umidade
+  if (terra_seca == true) {
+    bt_sinal = "C";
   }
   else {
-    
-  }*/
+    bt_sinal = "D";
+  }
+  
+  //leitura do sensor de movimento
+  if (analogRead(A2) > 512) {
+    correio_vazio = false;
+  }
+  else {
+    correio_vazio = true;
+  }
+
+  //notificação do correio
+  if (correio_vazio == true){
+    bt_sinal = "F";
+  }
+  else{
+    bt_sinal = "G";
+  }
 }
