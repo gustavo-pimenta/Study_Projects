@@ -1,0 +1,12 @@
+# pyautogui.position()
+# pyautogui.moveTo(x,y,duration)
+# pyautogui.click(x,y)
+# pyautogui.doubleClick(x,y)
+# pyautogui.rightClick(x,y)
+# pyautogui.hotkey(‘Ctrl’,’Shift’,’q’)
+# pyautogui.KEYBOARD_KEYS
+# pyautogui.press('enter')
+# pyautogui.alert(text='', title='', button='OK')
+# pyautogui.confirm(text='', title='', buttons=['OK', 'Cancel'])
+# pyautogui.prompt(text='', title='' , default='')
+# pyautogui.password(text='', title='', default='', mask='*')
