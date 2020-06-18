@@ -1,3 +1,10 @@
+import pyautogui
+
+FAIL SAFE
+stop de program when the mouse move to the upper left corner of the screen
+FAIL SAFE ON # pyautogui.FAILSAFE = True 
+FAIL SAFE OFF # pyautogui.FAILSAFE = False
+
 MOUSE
 # pyautogui.position()
 # pyautogui.moveTo(x,y,duration)
