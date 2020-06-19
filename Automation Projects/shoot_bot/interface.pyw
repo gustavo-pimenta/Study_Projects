@@ -1,12 +1,14 @@
+# https://www.youtube.com/watch?v=Et0fYeA2XxY
+
 import PySimpleGUI as sg
 import time
 
-class Tela:
+class TelaPython:
     def __init__(self):
         layout = [
-            [sg.Text('teste')]
-            [sg.Input()]
-            [sg.Button('Start')]
+            [sg.Text('teste')],
+            [sg.Input()],
+            [sg.Button('Start')],
             [sg.Button('Stop')]
         ]
 
@@ -14,8 +16,9 @@ class Tela:
 
         self.button, self.values = janela.Read()
 
-    def iniciar(self):
-        print(self.values)
+def Iniciar(self):
+    print(self.values)
 
-Tela.iniciar()
+# tela = 
+TelaPython().Iniciar()
         
