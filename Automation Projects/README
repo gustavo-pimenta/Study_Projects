@@ -2,5 +2,6 @@ Automation Projects
 
 libs:
 PyAutoGUI - system control
+PySimpleGUI - interface (very easy)
 Pynput - system control / event listener
 Tkinter - interface / event listener
