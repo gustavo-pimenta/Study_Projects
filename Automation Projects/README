@@ -1,0 +1,6 @@
+_Automation_Projects_
+
+libs:
+PyAutoGUI - system control
+Pynput - event listener
+Tkinter - interface
