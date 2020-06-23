@@ -1,36 +1,43 @@
 from pynput.mouse import Listener
 import time
 
+shoot = False
+mouse_pos = ()
+
+recoil_size = 10
+fire_rate = 10
+
+
 def on_move(x, y):
-    mouse_pos=(x, y)
+    global mouse_pos
+    mouse_pos = (x, y)
     return mouse_pos
 
 def on_click(x, y, button, pressed):
+    global shoot
     press=(x, y, button, pressed)
+    
+    if (str(press[2]) == 'Button.left'):
+        if (bool(press[3]==True):
+            
+
+
     return press
+    
 
 def on_scroll(x, y, dx, dy):
     scroll=True
 
 
 with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
-    print("oi")
+    # print("oi")
     listener.join()
     
 
 
-x=1
-while x==1:
-    print(mouse_pos)
-    time.sleep(1)
 
 
-
-
-
-
-
-# rom pynput import keyboard
+# from pynput import keyboard
 # import time
 
 # break_program = False
