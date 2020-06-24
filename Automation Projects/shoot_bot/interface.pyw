@@ -8,11 +8,12 @@ sg.theme('DarkAmber')
 class TelaPython:
     def __init__(self):
         layout = [
-            [sg.Button('Single Shot', size=(20, 1)),sg.Button('Multiple Shot', size=(20, 1))],
+            [sg.Text('Fire Mode:')],
+            [sg.Radio('Single Shot','shot', key='single'), sg.Radio('Multiple Shot', 'shot', key='multiple')],
             [],
-            [sg.Text('Recoil Size:'), sg.Slider(range=(0, 1000), orientation='h', size=(30, 10), default_value=25, tick_interval=250)],
+            [sg.Text('Recoil Size:'), sg.Slider(range=(0, 1000), orientation='h', size=(30, 10), default_value=25, tick_interval=250, key='recoil_size')],
             [],
-            [sg.Text('Fire Rate:'), sg.Slider(range=(0, 1000), orientation='h', size=(30, 10), default_value=25, tick_interval=250)],
+            [sg.Text('Fire Rate:'), sg.Slider(range=(0, 1000), orientation='h', size=(30, 10), default_value=25, tick_interval=250, key='fire_rate')],
             [],
             [sg.Text('Made by Pimen_Top')]
             
@@ -24,10 +25,20 @@ class TelaPython:
         janela = sg.Window('Shoot Bot', layout, default_element_size=(400, 10))
 
         self.button, self.values = janela.Read()
+        print(janela.Read())
 
-def Iniciar(self):
-    print(self.values)
+    def Iniciar(self):
 
-# tela = 
-TelaPython().Iniciar()
-        
+        shot = self.button
+        recoil_size = self.values['recoil_size']
+        fire_rate = self.values['fire_rate']
+
+        return shot, recoil_size, fire_rate
+
+
+shot, recoil_size, fire_rate = TelaPython().Iniciar()
+
+while True:
+    
+    print(shot, recoil_size, fire_rate)
+    time.sleep(1)
