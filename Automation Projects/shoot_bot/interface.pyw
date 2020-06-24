@@ -9,36 +9,43 @@ class TelaPython:
     def __init__(self):
         layout = [
             [sg.Text('Fire Mode:')],
-            [sg.Radio('Single Shot','shot', key='single'), sg.Radio('Multiple Shot', 'shot', key='multiple')],
-            [],
-            [sg.Text('Recoil Size:'), sg.Slider(range=(0, 1000), orientation='h', size=(30, 10), default_value=25, tick_interval=250, key='recoil_size')],
-            [],
-            [sg.Text('Fire Rate:'), sg.Slider(range=(0, 1000), orientation='h', size=(30, 10), default_value=25, tick_interval=250, key='fire_rate')],
-            [],
-            [sg.Text('Made by Pimen_Top')]
+            [sg.Radio('Single Shot','shot', key='single', default=True), sg.Radio('Multiple Shot', 'shot', key='multiple', default=False)],  
+            [sg.Text('')],
+            [sg.Text('Recoil Size:')],
+            [sg.Slider(range=(0, 1000), orientation='h', size=(50, 15), default_value=25, tick_interval=250, key='recoil_size')],     
+            [sg.Text('')],
+            [sg.Text('Fire Rate:')],
+            [sg.Slider(range=(0, 1000), orientation='h', size=(50, 15), default_value=25, tick_interval=250, key='fire_rate')],           
+            [sg.Text('')],
+            [sg.Text('Made by Pimen_Top                                 '), sg.Button('Stop', size=(10,1)), sg.Button('Start', size=(10,1))]
             
             
             
         ]
 
         # janela = sg.Window('Shoot Bot').layout(layout)
-        janela = sg.Window('Shoot Bot', layout, default_element_size=(400, 10))
-
-        self.button, self.values = janela.Read()
-        print(janela.Read())
+        self.janela = sg.Window('Shoot Bot', layout, default_element_size=(400, 10))
+        
+        
 
     def Iniciar(self):
+        while True:
 
-        shot = self.button
-        recoil_size = self.values['recoil_size']
-        fire_rate = self.values['fire_rate']
+            self.button, self.values = self.janela.Read()
 
-        return shot, recoil_size, fire_rate
+            single = self.values['single']
+            multiple = self.values['multiple']
+            recoil_size = self.values['recoil_size']
+            fire_rate = self.values['fire_rate']
+            start_stop = self.button
+
+            # return single, multiple, recoil_size, fire_rate, start_stop
+            print(single, multiple, recoil_size, fire_rate, start_stop)
 
 
-shot, recoil_size, fire_rate = TelaPython().Iniciar()
+TelaPython().Iniciar()
 
-while True:
+# while True:
     
-    print(shot, recoil_size, fire_rate)
-    time.sleep(1)
+#     print(shot, recoil_size, fire_rate)
+#     time.sleep(1)
