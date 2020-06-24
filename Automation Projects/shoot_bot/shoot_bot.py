@@ -1,11 +1,13 @@
-from pynput.mouse import Listener
+from pynput.mouse import Listener, Button, Controller
 import time
 
+mouse = Controller()
 shoot = False
 mouse_pos = ()
+break_program = False
 
 recoil_size = 10
-fire_rate = 10
+fire_rate = 0.9
 
 
 def on_move(x, y):
@@ -14,23 +16,32 @@ def on_move(x, y):
     return mouse_pos
 
 def on_click(x, y, button, pressed):
+    global mouse
     global shoot
+    shoot=False
+    
     press=(x, y, button, pressed)
-    
+
     if (str(press[2]) == 'Button.left'):
-        if (bool(press[3]==True):
-            
-
-
-    return press
-    
+        if (bool(press[3])==True):
+            shoot=True
+        else:
+            shoot=False
 
 def on_scroll(x, y, dx, dy):
     scroll=True
 
 
 with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
-    # print("oi")
+    
+    while (break_program == False):
+
+            if (shoot==True):
+                mouse.move(0, recoil_size)
+                time.sleep((1-fire_rate))
+
+
+
     listener.join()
     
 
