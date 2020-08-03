@@ -14,19 +14,42 @@ def limpar(text): # removes unnecessary characters
     text = text.replace("," , '')
     return text
 
-loop = 1 # times to repeat
-while loop<=10:
+def check_log(): # check if the "dd.csv" file is empty
+    with open(r'dd.csv', 'r') as log: # open csv
+        leitor_log = list(csv.reader(log, delimiter='\n')) # read csv info
+        conteudo=bool()
+
+        try:
+            for linha in leitor_log:
+                texto = str(linha)
+                texto = limpar(texto)
+                if texto == '':
+                    conteudo = False
+                else:
+                    conteudo = True
+                    break
+        except:
+            conteudo = False
+        
+        log.close()
+        return conteudo 
+
+
+loop = 1 
+while loop<=2:
+
     print('\n______________________________LOOP ',loop,'______________________________\n')
 
     # SCRIPT TO CREATE THE VOLUME WITH THE SNAPSHOT
-    print('\nRODANDO O PRIMEIRO SH\n')
+    print('\nRODANDO O PRIMEIRO SH - CRIAR VOLUME\n')
     # to run the shell script we can use "os.system()" or "subprocess.Popen()" or "subprocess.call()" or "subprocess.run()"
-    os.system('shell1.sh')
+    os.system('sh shell1.sh')
+
     time.sleep(2)
 
     # SCRIPT TO SAVE THE NEW LIST OF VOLUME ID IN "vol_id.csv"
-    print('\nRODANDO O SEGUNDO SH\n')
-    os.system('shell2.sh')
+    print('\nRODANDO O SEGUNDO SH - BAIXAR A LISTA DE VOLUMES\n')
+    os.system('sh shell2.sh')
     time.sleep(2)
     
     # FIND THE NEWEST VOLUME ID OF THE LIST AND SAVE IN "volume.txt"
@@ -180,9 +203,21 @@ while loop<=10:
     time.sleep(2) # time interval
 
     # SCRIPT TO CONECT THE VOLUME AT THE VM
-    print('\nRODANDO O TERCEIRO SH\n')
-    os.system('shell3.sh')
-    time.sleep(2)
+    print('\nRODANDO O TERCEIRO SH - ANEXAR VOLUME NA VM\n')
+    os.system('sh shell3.sh')
+    
+    print('\nINICIANDO PAUSA\n')
+    sec=1800
+    while (check_log()==False): # pause the script while "dd.csv" be empty
+            time.sleep(1)
+            sec+=1
+            if sec>=1800:
+                print('\nAGUARDANDO...\n')
+                sec=0
+    print('\nFIM DA PAUSA\n')
+
+    print('\nRODANDO O QUARTO SH - DESANEXAR E EXCLUIR VOLUME\n')
+    os.system('sh shell4.sh')
 
     # GET THE NEXT SNAPSHOT ID OF THE LIST AND SAVE IN "ID.txt"
     with open('snaps_2012_2015_ID.CSV', 'r') as id_list: # open snapshot ID list
@@ -196,6 +231,7 @@ while loop<=10:
 
             id_from_list = str(line)
             id_from_list = limpar(id_from_list)
+            id_from_doc = limpar(id_from_doc)
             
             if (str(id_from_doc)==str(id_from_list)): # find the current ID inside the list
                 doc = open('ID.txt','w')
@@ -204,6 +240,7 @@ while loop<=10:
                 next_id = limpar(next_id)
                 
                 doc.write(next_id) # write the next ID in "ID.txt"
+                print('\nID.txt ATUALIZADO\n')
                 doc.close()
 
                 break # break the loop after find and write ID
@@ -212,7 +249,7 @@ while loop<=10:
         
         id_doc.close() # close ID.txt
         id_list.close() # close the snapshot ID list
-        print('\nID.txt ATUALIZADO\n')
+        
     time.sleep(2) # time interval
 
     loop+=1
