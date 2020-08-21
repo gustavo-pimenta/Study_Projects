@@ -99,7 +99,7 @@ def board(): # print the buttons and the game board
     pygame.display.update()
     
 def cpu_play(): 
-    global A,B,C,D,E,F,G,H,I, game_mode, playing
+    global A,B,C,D,E,F,G,H,I, game_mode, playing, feature_log, label_log
 
     empty_spaces = []
 
@@ -165,6 +165,9 @@ def cpu_play():
 
         play = cpu_guess(board)
         space_empty=True
+
+        feature_log.append(board) 
+        label_log.append(play)
 
         try:
             if play=='A':
@@ -324,42 +327,38 @@ def event_reader():
                                 if I=='':
                                     I='X'
                                     turno=1
-
             if turno==1:
                 turno=0
-                
                 cpu_play()
                 blackout()
                 board()
-                check()
-                
+                check() 
                 print_game_mode()
                 
                 
-
 def winner_check(): # check who won the game and print 
     global A,B,C,D,E,F,G,H,I, winner, playing
 
-    if A!='' and (A==B and A==C or A==D and A==G or A==E and A==I):
+    if winner=='' and A!='' and (A==B and A==C or A==D and A==G or A==E and A==I):
         winner=A
         text = fonte30.render(winner, 1, preto)
         screen.blit(text, (225,413))
         pygame.display.update()
         playing=False
         
-    if C!='' and (C==E and C==G or C==F and C==I):
+    if winner=='' and C!='' and (C==E and C==G or C==F and C==I):
         winner=C
         text = fonte30.render(winner, 1, preto)
         screen.blit(text, (225,413))
         pygame.display.update()
         playing=False
-    if H!='' and (H==G and H==I or H==E and B==H):
+    if winner=='' and H!='' and (H==G and H==I or H==E and B==H):
         winner=H
         text = fonte30.render(winner, 1, preto)
         screen.blit(text, (225,413))
         pygame.display.update()
         playing=False
-    if D!='' and (D==E and D==F):
+    if winner=='' and D!='' and (D==E and D==F):
         winner=D
         text = fonte30.render(winner, 1, preto)
         screen.blit(text, (225,413))
@@ -370,25 +369,25 @@ def reload_game(): # reload the game and read the "game mode" button
     global playing, game_mode
     for event in pygame.event.get():
 
-            if event.type == pygame.QUIT:
-                game_on=False
-                playing=False
-                pygame.quit() 
-                sys.exit(0)
-            
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                click_x, click_y = pygame.mouse.get_pos()
+        if event.type == pygame.QUIT:
+            game_on=False
+            playing=False
+            pygame.quit() 
+            sys.exit(0)
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            click_x, click_y = pygame.mouse.get_pos()
 
-                if (5<click_x<138) and (408<click_y<435):
-                    playing=True
-                    blackout()
-                    board()
-                    print_game_mode()
+            if (5<click_x<138) and (408<click_y<435):
+                playing=True
+                blackout()
+                board()
+                print_game_mode()    
 
-                if (5<click_x<138) and (444<click_y<471):
-                    if game_mode==1: game_mode=2
-                    elif game_mode==2: game_mode=1
-                    print_game_mode()
+            if (5<click_x<138) and (444<click_y<471):
+                if game_mode==1: game_mode=2
+                elif game_mode==2: game_mode=1
+                print_game_mode()
 
 def print_game_mode():
     global game_mode
@@ -445,6 +444,38 @@ def cpu_guess(spaces): # ML to preview moves
     ans = limpar(str(ans))
     return ans
 
+def write_results():
+    global winner, feature_log, label_log
+
+    if winner=='O':
+        with open(r'feature.csv', 'a') as csv_file: # open csv
+            for i in feature_log:
+                csv_file.write(('\n'+str(i)))
+            csv_file.close()
+        with open(r'label.csv', 'a') as csv_file: # open csv
+            for j in label_log:
+                csv_file.write(('\n'+str(j)))
+            csv_file.close()
+
+def check_velha():
+    global A,B,C,D,E,F,G,H,I, playing
+
+    empty_spaces = []
+
+    if A=='': empty_spaces.append('A')
+    if B=='': empty_spaces.append('B')
+    if C=='': empty_spaces.append('C')
+    if D=='': empty_spaces.append('D')
+    if E=='': empty_spaces.append('E')
+    if F=='': empty_spaces.append('F')
+    if G=='': empty_spaces.append('G')
+    if H=='': empty_spaces.append('H')
+    if I=='': empty_spaces.append('I')
+
+    if empty_spaces==[]:
+        playing=False
+
+
 game_on = True
 playing = True
 game_mode=2
@@ -455,6 +486,8 @@ while game_on:
 
     turno=randint(0,1)
     winner=''
+    feature_log=[]
+    label_log=[]
     A=''
     B=''
     C=''
@@ -469,9 +502,10 @@ while game_on:
 
         event_reader()
         winner_check()
-        
-    
-    reload_game()
+        check_velha()  
+             
+    reload_game()   
+    write_results()
 
 pygame.quit() 
 sys.exit(0)
